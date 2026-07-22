@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pref_subcategory_search">Search</string>
+
     <string name="pref_drawer_auto_keyboard_title">Show keyboard on open</string>
     <string name="pref_drawer_auto_keyboard_summary">Automatically focus the search box and show the keyboard when the app drawer opens</string>
+
+    <string name="pref_drawer_fuzzy_search_title">Fuzzy search</string>
+    <string name="pref_drawer_fuzzy_search_summary">Match apps even with typos or skipped letters when searching the drawer</string>
 </resources>

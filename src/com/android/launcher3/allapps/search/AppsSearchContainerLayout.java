@@ -49,6 +49,8 @@ import com.android.launcher3.views.ActivityContext;
 
 import android.icu.text.Collator;
 
+import org.yrovas.bunnylauncher.search.DrawerAppSearchAlgorithm;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -147,7 +149,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     public void initializeSearch(ActivityAllAppsContainerView<?> appsView) {
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(getContext(), true),
+                new DrawerAppSearchAlgorithm(getContext(), true),
                 this, mLauncher, this);
     }
 

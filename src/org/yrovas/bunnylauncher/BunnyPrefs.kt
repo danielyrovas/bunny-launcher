@@ -18,13 +18,17 @@ package org.yrovas.bunnylauncher
 import com.android.launcher3.ConstantItem
 import com.android.launcher3.LauncherPrefs
 
-/** Preferences specific to Bunny Launcher, kept out of [LauncherPrefs] to ease rebasing. */
 object BunnyPrefs {
-    /** Shared preference key for [DRAWER_AUTO_KEYBOARD]. */
     const val DRAWER_AUTO_KEYBOARD_KEY: String = "pref_drawer_auto_keyboard"
+    const val DRAWER_FUZZY_SEARCH_KEY: String = "pref_drawer_fuzzy_search"
 
     /** Whether opening the app drawer focuses the search box and shows the keyboard. */
     @JvmField
     val DRAWER_AUTO_KEYBOARD: ConstantItem<Boolean> =
         LauncherPrefs.backedUpItem(DRAWER_AUTO_KEYBOARD_KEY, true)
+
+    /** Whether app drawer search matches apps with a `smart` algorithm. */
+    @JvmField
+    val DRAWER_FUZZY_SEARCH: ConstantItem<Boolean> =
+        LauncherPrefs.backedUpItem(DRAWER_FUZZY_SEARCH_KEY, false)
 }

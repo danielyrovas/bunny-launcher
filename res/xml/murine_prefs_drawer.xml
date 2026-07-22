@@ -60,4 +60,13 @@
             app:showTicks="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_subcategory_search">
+      <SwitchPreferenceCompat
+        android:key="pref_drawer_fuzzy_search"
+        android:title="@string/pref_drawer_fuzzy_search_title"
+        android:summary="@string/pref_drawer_fuzzy_search_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
+    </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
