@@ -154,6 +154,14 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
     }
 
     /**
+     * @return {@code true} If there is an active transition which is driven by the user, ie. one
+     *         whose progress follows a touch gesture and which may still be reverted.
+     */
+    public boolean isUserControlledTransition() {
+        return mConfig.currentAnimation != null && mConfig.isUserControlled();
+    }
+
+    /**
      * @see #goToState(S, boolean, AnimatorListener)
      */
     public void goToState(S state) {

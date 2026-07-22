@@ -111,6 +111,8 @@ import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
 import static com.android.launcher3.util.WallpaperThemeManager.setWallpaperDependentTheme;
 
+import static org.yrovas.bunnylauncher.DrawerKeyboard.attemptAutoInvoke;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -301,6 +303,7 @@ import java.util.stream.Stream;
 import app.murinelauncher.graphics.WorkspaceBlurUtils;
 import app.murinelauncher.widget.search.MurineSearchBoxView;
 import app.murinelauncher.widget.smartspace.SmartspaceMode;
+import org.yrovas.bunnylauncher.DrawerKeyboard;
 
 /**
  * Default launcher application.
@@ -1140,6 +1143,12 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        DrawerKeyboard.retryFailedInvoke(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (mDeferOverlayCallbacks) {
@@ -1301,6 +1310,11 @@ public class Launcher extends StatefulActivity<LauncherState>
                         .log(getAllAppsEntryEvent().get());
             }
         }
+
+        if (ALL_APPS.equals(state) && !mStateManager.isUserControlledTransition()) {
+            attemptAutoInvoke(this);
+        }
+
         updateDisallowBack();
     }
 
@@ -1333,13 +1347,17 @@ public class Launcher extends StatefulActivity<LauncherState>
             getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
         }
 
-        if (ALL_APPS.equals(mPrevLauncherState) && !ALL_APPS.equals(state)
+        if (!ALL_APPS.equals(state)
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getAppsView().reset(false);
             getAllAppsExitEvent().ifPresent(getStatsLogManager().logger()::log);
             mAllAppsSessionLogId = null;
         }
+
+       if (ALL_APPS.equals(state)) {
+           DrawerKeyboard.attemptAutoInvoke(this);
+       }
 
         // Set screen title for Talkback
         setTitle(state.getTitle());

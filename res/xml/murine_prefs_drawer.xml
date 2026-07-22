@@ -38,6 +38,13 @@
 
     <PreferenceCategory android:title="@string/pref_subcategory_layout">
         <SwitchPreferenceCompat
+            android:key="pref_drawer_auto_keyboard"
+            android:title="@string/pref_drawer_auto_keyboard_title"
+            android:summary="@string/pref_drawer_auto_keyboard_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreferenceCompat
             android:key="pref_grid_size_width_drawer_override_switch"
             android:title="@string/pref_drawer_grid_width_override_title"
             android:summary="@string/pref_drawer_grid_width_override_summary"

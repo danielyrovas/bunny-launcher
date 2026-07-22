@@ -48,6 +48,8 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.TouchController;
 
+import org.yrovas.bunnylauncher.DrawerKeyboard;
+
 /**
  * TouchController for handling state changes
  */
@@ -367,6 +369,9 @@ public abstract class AbstractStateChangeTouchController
         updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
         if (targetState == LauncherState.ALL_APPS) {
+            // The gesture has committed to opening the drawer, so start the keyboard now rather
+            // than waiting for the remainder of the drawer animation to play out.
+            DrawerKeyboard.attemptAutoInvoke(mLauncher);
             if (mAllAppsOvershootStarted) {
                 mLauncher.getAppsView().onRelease();
                 mAllAppsOvershootStarted = false;
