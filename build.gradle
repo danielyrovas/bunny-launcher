@@ -105,13 +105,13 @@ android {
     productFlavors {
         aosp {
             dimension "app"
-            applicationId 'app.murinelauncher'
+            applicationId 'org.yrovas.bunnylauncher'
             testApplicationId 'com.android.launcher3.tests'
         }
 
         l3go {
             dimension "app"
-            applicationId 'app.murinelauncher'
+            applicationId 'org.yrovas.bunnylauncher'
             testApplicationId 'com.android.launcher3.tests'
         }
 
