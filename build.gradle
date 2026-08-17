@@ -50,7 +50,7 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 36
-        versionCode 10105
+        versionCode 10106
         versionName "1.1"
 
         buildConfigField "boolean", "IS_STUDIO_BUILD", "false"

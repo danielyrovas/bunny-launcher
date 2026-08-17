@@ -1357,6 +1357,8 @@ public class Launcher extends StatefulActivity<LauncherState>
 
        if (ALL_APPS.equals(state)) {
            DrawerKeyboard.attemptAutoInvoke(this);
+       } else {
+           DrawerKeyboard.cancelAutoInvoke(this);
        }
 
         // Set screen title for Talkback

@@ -15,6 +15,7 @@
  */
 package org.yrovas.bunnylauncher
 
+import android.util.Log
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherState.ALL_APPS
@@ -53,5 +54,10 @@ object DrawerKeyboard {
     fun retryFailedInvoke(launcher: Launcher) {
         if (!LauncherPrefs.get(launcher).get(BunnyPrefs.DRAWER_AUTO_KEYBOARD)) return
         retryFailedInvokeAfter(launcher, 10, 20, 40, 80)
+    }
+
+    @JvmStatic
+    fun cancelAutoInvoke(launcher: Launcher) {
+        lastInvokeAttemptSuccess = true
     }
 }
