@@ -43,7 +43,7 @@ public class LauncherApplication extends Application {
 
         com.zxy.recovery.core.Recovery.getInstance()
                 .debug(true)
-                .showDevEmail("alesimula@murinelauncher.app", true)
+                .showDevEmail("bunny-launcher@danielyrovas.com", true)
                 .recoverInBackground(false)
                 .recoverStack(true)
                 .mainPage(Launcher.class)
