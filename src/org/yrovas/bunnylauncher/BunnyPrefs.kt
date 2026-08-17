@@ -30,5 +30,5 @@ object BunnyPrefs {
     /** Whether app drawer search matches apps with a `smart` algorithm. */
     @JvmField
     val DRAWER_FUZZY_SEARCH: ConstantItem<Boolean> =
-        LauncherPrefs.backedUpItem(DRAWER_FUZZY_SEARCH_KEY, false)
+        LauncherPrefs.backedUpItem(DRAWER_FUZZY_SEARCH_KEY, true)
 }

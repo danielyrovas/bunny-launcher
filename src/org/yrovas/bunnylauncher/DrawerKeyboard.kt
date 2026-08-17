@@ -15,7 +15,6 @@
  */
 package org.yrovas.bunnylauncher
 
-import android.util.Log
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherState.ALL_APPS
@@ -26,9 +25,7 @@ object DrawerKeyboard {
     @JvmStatic
     fun attemptAutoInvoke(launcher: Launcher) {
         if (!LauncherPrefs.get(launcher).get(BunnyPrefs.DRAWER_AUTO_KEYBOARD)) return
-        val e = launcher.appsView
-            ?.searchUiManager
-            ?.editText ?: return
+        val e = launcher.appsView?.searchUiManager?.editText ?: return
 
         lastInvokeAttemptSuccess = e.showKeyboard() == true
         if (!lastInvokeAttemptSuccess) {
@@ -39,20 +36,22 @@ object DrawerKeyboard {
             }
         }
     }
-    @JvmStatic
-    fun retryFailedInvoke(launcher: Launcher) {
-        if (!LauncherPrefs.get(launcher).get(BunnyPrefs.DRAWER_AUTO_KEYBOARD)) return
 
+    private fun retryFailedInvokeAfter(launcher: Launcher, vararg delays: Long) {
         if (launcher.stateManager.targetState == ALL_APPS && !lastInvokeAttemptSuccess) {
             attemptAutoInvoke(launcher)
         }
 
-        if (!lastInvokeAttemptSuccess) {
-            launcher.appsView.postDelayed({
-                if (launcher.stateManager.targetState == ALL_APPS && !lastInvokeAttemptSuccess) {
-                    attemptAutoInvoke(launcher)
-                }
-            }, 40)
-        }
+        if (lastInvokeAttemptSuccess || delays.isEmpty()) return
+
+        launcher.appsView.postDelayed({
+            retryFailedInvokeAfter(launcher, *delays.drop(1).toLongArray())
+        }, delays.first())
+    }
+
+    @JvmStatic
+    fun retryFailedInvoke(launcher: Launcher) {
+        if (!LauncherPrefs.get(launcher).get(BunnyPrefs.DRAWER_AUTO_KEYBOARD)) return
+        retryFailedInvokeAfter(launcher, 10, 20, 40, 80)
     }
 }
