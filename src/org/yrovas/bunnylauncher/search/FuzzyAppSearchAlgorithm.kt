@@ -20,6 +20,7 @@ import android.os.Handler
 import android.os.UserManager
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherAppState.Companion.getInstance
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.model.AllAppsList
@@ -30,6 +31,7 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.search.SearchAlgorithm
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Executors
+import org.yrovas.bunnylauncher.BunnyPrefs
 import java.text.Normalizer
 
 /**
@@ -92,14 +94,18 @@ class FuzzyAppSearchAlgorithm
             val results = ArrayList<Pair<AppInfo, Int>>()
             val userManager = context.getSystemService<UserManager>(UserManager::class.java)
             val userCache = UserCache.getInstance(context)
+            val showQuietModeApps =
+                LauncherPrefs.get(context).get(BunnyPrefs.DRAWER_SEARCH_SHOW_QUIET_MODE_APPS)
 
             for (info in apps) {
-                if (userCache.getUserInfo(info.user).isPrivate && userManager.isQuietModeEnabled(
-                        info.user,
-                    )
+                if (
+                    !showQuietModeApps
+                    && userCache.getUserInfo(info.user).isPrivate
+                    && userManager.isQuietModeEnabled(info.user)
                 ) {
                     continue
                 }
+
                 scoreQuery(q, info.title.toString()).let {
                     if (it >= 0) results.add(info to it)
                 }

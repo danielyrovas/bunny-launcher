@@ -37,6 +37,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -433,6 +434,9 @@ public class ItemClickHandler {
             if (ppm != null) ppm.setQuietMode(false);
             return;
         }
+        if (maybeUnlockPrivateSpaceForLaunch(item, launcher)) {
+            return;
+        }
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
@@ -460,6 +464,31 @@ public class ItemClickHandler {
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }
         launcher.startActivitySafely(v, intent, item);
+    }
+
+    /**
+     * If the item belongs to a locked private space, prompts the user to unlock it and queues the
+     * launch to run once it is unlocked.
+     *
+     * @return true if the launch has been deferred to the unlock.
+     */
+    private static boolean maybeUnlockPrivateSpaceForLaunch(ItemInfo item, Launcher launcher) {
+        if (item.user == null || Process.myUserHandle().equals(item.user)
+                || launcher.getAppsView() == null) {
+            return false;
+        }
+        PrivateProfileManager ppm = launcher.getAppsView().getPrivateProfileManager();
+        if (ppm == null || !item.user.equals(ppm.getProfileUser())) {
+            return false;
+        }
+        UserManager userManager = launcher.getSystemService(UserManager.class);
+        if (userManager == null || !userManager.isQuietModeEnabled(item.user)) {
+            return false;
+        }
+        // The icon that was tapped is about to be rebound as the app list reloads, so launch
+        // without a source view (i.e. without the icon-to-window animation).
+        ppm.requestUnlockAndRun(() -> startAppShortcutOrInfoActivity(null, item, launcher));
+        return true;
     }
 
     /**

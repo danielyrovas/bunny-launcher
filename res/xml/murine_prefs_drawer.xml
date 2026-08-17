@@ -67,6 +67,13 @@
         android:summary="@string/pref_drawer_fuzzy_search_summary"
         android:defaultValue="true"
         android:persistent="true" />
+
+      <SwitchPreferenceCompat
+        android:key="pref_drawer_search_show_quiet_mode_apps"
+        android:title="@string/pref_drawer_search_show_quiet_mode_apps_title"
+        android:summary="@string/pref_drawer_search_show_quiet_mode_apps_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
     </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

@@ -45,6 +45,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
@@ -111,6 +112,7 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final int MASK_VIEW_DELAY = 400;
     private static final int NO_DELAY = 0;
     private static final int CONTAINER_OPACITY_DURATION = 150;
+    private static final long PENDING_UNLOCK_TIMEOUT_MS = 60_000;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private final int mPsHeaderHeight;
@@ -153,6 +155,9 @@ public class PrivateProfileManager extends UserProfileManager {
     private final String mPrivateSpaceAppContentDesc;
     private final String mLockedStateContentDesc;
     private final String mUnLockedStateContentDesc;
+    @Nullable
+    private Runnable mPendingUnlockAction;
+    private long mPendingUnlockExpiryTime;
 
     public PrivateProfileManager(UserManager userManager,
             ActivityAllAppsContainerView<?> allApps,
@@ -299,8 +304,10 @@ public class PrivateProfileManager extends UserProfileManager {
         mIsStateTransitioning = previousState != STATE_UNKNOWN && previousState != updatedState;
         if (previousState == STATE_DISABLED && updatedState == STATE_ENABLED) {
             postUnlock();
+            runPendingUnlockAction();
         } else if (previousState == STATE_ENABLED && updatedState == STATE_DISABLED){
             executeLock();
+            mPendingUnlockAction = null;
         } else {
             // No state transition = no animation will run; clear the flag to avoid it getting stuck.
             mReadyToAnimate = false;
@@ -364,6 +371,31 @@ public class PrivateProfileManager extends UserProfileManager {
     public void setQuietMode(boolean enable) {
         setQuietMode(enable, mAllApps.mActivityContext);
         mReadyToAnimate = true;
+    }
+
+    /**
+     * Prompts the user to unlock the private space, running {@code action} on the main thread once
+     * it has been unlocked. Only one action can be pending at a time; it is dropped if the space
+     * gets locked again or is not unlocked within {@link #PENDING_UNLOCK_TIMEOUT_MS}.
+     */
+    public void requestUnlockAndRun(@NonNull Runnable action) {
+        mPendingUnlockAction = action;
+        mPendingUnlockExpiryTime = SystemClock.uptimeMillis() + PENDING_UNLOCK_TIMEOUT_MS;
+        logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
+        setQuietMode(false);
+    }
+
+    private void runPendingUnlockAction() {
+        Runnable action = mPendingUnlockAction;
+        mPendingUnlockAction = null;
+        if (action == null) {
+            return;
+        }
+        if (SystemClock.uptimeMillis() > mPendingUnlockExpiryTime) {
+            Log.d(TAG, "Dropping expired pending unlock action");
+            return;
+        }
+        MAIN_EXECUTOR.post(action);
     }
 
     /**

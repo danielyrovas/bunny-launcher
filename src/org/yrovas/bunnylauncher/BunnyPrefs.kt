@@ -21,6 +21,7 @@ import com.android.launcher3.LauncherPrefs
 object BunnyPrefs {
     const val DRAWER_AUTO_KEYBOARD_KEY: String = "pref_drawer_auto_keyboard"
     const val DRAWER_FUZZY_SEARCH_KEY: String = "pref_drawer_fuzzy_search"
+    const val DRAWER_SEARCH_SHOW_QUIET_MODE_APPS_KEY: String = "pref_drawer_search_show_quiet_mode_apps"
 
     /** Whether opening the app drawer focuses the search box and shows the keyboard. */
     @JvmField
@@ -31,4 +32,9 @@ object BunnyPrefs {
     @JvmField
     val DRAWER_FUZZY_SEARCH: ConstantItem<Boolean> =
         LauncherPrefs.backedUpItem(DRAWER_FUZZY_SEARCH_KEY, true)
+
+    /** Whether app drawer search will show private space apps when it is locked. */
+    @JvmField
+    val DRAWER_SEARCH_SHOW_QUIET_MODE_APPS: ConstantItem<Boolean> =
+        LauncherPrefs.backedUpItem(DRAWER_SEARCH_SHOW_QUIET_MODE_APPS_KEY, true)
 }

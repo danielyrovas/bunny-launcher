@@ -7,4 +7,7 @@
 
     <string name="pref_drawer_fuzzy_search_title">Fuzzy search</string>
     <string name="pref_drawer_fuzzy_search_summary">Match apps even with typos or skipped letters when searching the drawer</string>
+
+    <string name="pref_drawer_search_show_quiet_mode_apps_title">Show private space apps</string>
+    <string name="pref_drawer_search_show_quiet_mode_apps_summary">When enabled, show private spaces apps in the search results, even when the private space is locked</string>
 </resources>
